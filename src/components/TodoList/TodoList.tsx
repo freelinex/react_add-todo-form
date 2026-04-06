@@ -1,7 +1,20 @@
-import { Props } from '../../App';
 import { TodoInfo } from '../TodoInfo';
 
-export const TodoList: React.FC<Props> = ({ todos }) => {
+type TodoListProps = {
+  todos: {
+    user: {
+      id: number;
+      name: string;
+      username: string;
+      email: string;
+    } | null;
+    id: number;
+    title: string;
+    completed: boolean;
+  }[];
+};
+
+export const TodoList: React.FC<TodoListProps> = ({ todos }) => {
   return (
     <section className="TodoList">
       {todos.map(todo => (

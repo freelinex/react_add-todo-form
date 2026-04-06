@@ -27,30 +27,15 @@ type Todo = {
   } | null;
 };
 
-export type Props = {
-  todos: {
-    user: {
-      id: number;
-      name: string;
-      username: string;
-      email: string;
-    } | null;
-    id: number;
-    title: string;
-    completed: boolean;
-  }[];
-  onSubmit?: (todo: Todo) => void;
-};
-
-export const App = ({ onSubmit }: Props) => {
+export const App = ({ onSubmit }: { onSubmit?: (todo: Todo) => void }) => {
   const [title, setTitle] = useState('');
   const [hasTitleError, setHasTitleError] = useState(false);
   const [userId, setUserId] = useState(0);
   const [hasUserError, setHasUserError] = useState(false);
   const [newTodos, setNewTodos] = useState(todos);
 
-  const handleSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const handleSubmit = (formEvent: React.FormEvent<HTMLFormElement>) => {
+    formEvent.preventDefault();
 
     const titleError = !title;
     const userError = userId === 0;
@@ -62,11 +47,13 @@ export const App = ({ onSubmit }: Props) => {
       return;
     }
 
+    const maxId = Math.max(...newTodos.map(todo => todo.id), 0);
+
     const newTodo: Todo = {
       title,
       user: getUserById(userId),
       userId,
-      id: newTodos.length + 1,
+      id: maxId + 1,
       completed: false,
     };
 
@@ -80,13 +67,17 @@ export const App = ({ onSubmit }: Props) => {
     setUserId(0);
   };
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.target.value);
+  const handleTitleChange = (
+    titleEvent: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setTitle(titleEvent.target.value);
     setHasTitleError(false);
   };
 
-  const handleUserChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setUserId(+e.target.value);
+  const handleUserChange = (
+    userEvent: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    setUserId(+userEvent.target.value);
     setHasUserError(false);
   };
 
@@ -94,10 +85,13 @@ export const App = ({ onSubmit }: Props) => {
     <div className="App">
       <h1>Add todo form</h1>
 
-      <form action="/api/todos" method="POST">
+      <form action="/api/todos" method="POST" onSubmit={handleSubmit}>
         <div className="field">
+          <label htmlFor="titleInput">Title</label>
           <input
+            id="titleInput"
             type="text"
+            placeholder="Add a title"
             data-cy="titleInput"
             value={title}
             onChange={handleTitleChange}
@@ -106,7 +100,9 @@ export const App = ({ onSubmit }: Props) => {
         </div>
 
         <div className="field">
+          <label htmlFor="userSelect">User</label>
           <select
+            id="userSelect"
             data-cy="userSelect"
             value={userId}
             onChange={handleUserChange}
@@ -125,7 +121,7 @@ export const App = ({ onSubmit }: Props) => {
           {hasUserError && <span className="error">Please choose a user</span>}
         </div>
 
-        <button type="submit" data-cy="submitButton" onClick={handleSubmit}>
+        <button type="submit" data-cy="submitButton">
           Add
         </button>
       </form>
