@@ -58,7 +58,6 @@ export const App = ({ onSubmit }: Props) => {
     setHasTitleError(titleError);
     setHasUserError(userError);
 
-    // Если есть ошибки валидации, не добавляем задачу
     if (titleError || userError) {
       return;
     }
@@ -71,15 +70,12 @@ export const App = ({ onSubmit }: Props) => {
       completed: false,
     };
 
-    // Добавляем новую задачу в список
     setNewTodos([...newTodos, newTodo]);
 
-    // Вызываем callback если он передан
     if (onSubmit) {
       onSubmit(newTodo);
     }
 
-    // Очищаем форму
     setTitle('');
     setUserId(0);
   };
