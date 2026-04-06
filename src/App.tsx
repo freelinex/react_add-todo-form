@@ -14,7 +14,7 @@ export const todos = todosFromServer.map(todo => ({
   user: getUserById(todo.userId),
 }));
 
-type todo = {
+type Todo = {
   id: number;
   title: string;
   completed: boolean;
@@ -39,7 +39,7 @@ export type Props = {
     title: string;
     completed: boolean;
   }[];
-  onSubmit?: (todo: todo) => void;
+  onSubmit?: (todo: Todo) => void;
 };
 
 export const App = ({ onSubmit }: Props) => {
@@ -63,7 +63,7 @@ export const App = ({ onSubmit }: Props) => {
       return;
     }
 
-    const newTodo: todo = {
+    const newTodo: Todo = {
       title,
       user: getUserById(userId),
       userId,
